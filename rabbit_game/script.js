@@ -1,93 +1,90 @@
-const item = 0
 let arr = []
-let character=[
+const emptyCell = 0
+const rabbitCell = 1
+const homeCell = 2
+const wolfCell = 3
+const fenceCell = 4
+const wolfProcent = 0.65
+const fenceProcent = 0.45
+ let character=[
     {
         name:"rabbit",
         img:"/images/rabbit.png",
-        i:0,
-        j:0,
-        num:1
+        num:rabbitCell 
     },
     {
         name:"home",
         img:"/images/home.png",
-        i:0,
-        j:0,
-        num:2
+        num:homeCell
     },
     {
         name:"wolf",
         img:"/images/wolf.png",
-        i:0,
-        j:0,
-        num:3
+        num:wolfCell
     },
     {
         name:"fence",
         img:"/images/fence.png",
-        i:0,
-        j:0,
-        num:4
+        num:fenceCell
     }
 
 ]
-document.getElementById("startBtn").onclick = createArray
+document.getElementById("startBtn").onclick = startGame
+
+function startGame(){
+    array = createArray()
+    setPositions(array)
+}
 
 function createArray() {
-  const value = parseInt(document.getElementById('selectNum').value)
-  const array = new Array(value).fill(item).map(() => new Array(value).fill(item))
-  
-  isexit = []
-  character.map(item=>{
-    if(item.num === 3){
-        iteration = Math.floor(value*0.6+0.8)
-        while(iteration>0){
-            i = randomIndexes(value)
-            j = randomIndexes(value)
-            if(!isexit.includes(`${i}${j}`)){
-                isexit.push(`${i}${j}`)
-                item.i = i
-                item.j = j
-            }
-            array[item.i][item.j] = parseInt(item.num)
-            iteration--
-        }
-    }else
-    if(item.num === 4){
-        iteration = Math.floor(value*0.4+0.8)
-        console.log(iteration)
-        while(iteration>0){
-            i = randomIndexes(value)
-            j = randomIndexes(value)
-            if(!isexit.includes(`${i}${j}`)){
-                isexit.push(`${i}${j}`)
-                item.i = i
-                item.j = j
-            }
-            array[item.i][item.j] = parseInt(item.num)
-            iteration--
-        }
-    }else{
-        i = randomIndexes(value)
-        j = randomIndexes(value)
-        if(!isexit.includes(`${i}${j}`)){
-            isexit.push(`${i}${j}`)
-            item.i = i
-            item.j = j
-        }
-    
-        array[item.i][item.j] = parseInt(item.num)
-}
-}
-)
+  const arraySize = parseInt(document.getElementById('selectNum').value)
+  const array = new Array(arraySize).fill(emptyCell).map(() => new Array(arraySize).fill(emptyCell))
   
   console.log(character)
   console.log(array)
+  return array
 }
 
+function setPositions(array){
+    const wolfCount = Math.floor(array.length*wolfProcent)
+    const fenceCount = Math.floor(array.length*fenceProcent)
+    const isexit = []
+    setRabbitPosition(isexit,array.length)
+    setHomePosition(isexit,array.length)
+    for(let i=0;i<wolfCount;i++){
+        setWolfPosition(isexit,array.length)
+    }
+    for(let i=0;i<fenceCount;i++){
+        setFencePosition(isexit,array.length)
+    }
+}
 
-function  randomIndexes(value){
-    const i = Math.floor(Math.random() * value)
+function setRabbitPosition(isexit,arraySize){
+    setIndexes('rabbit',isexit,arraySize)
+    
+}
+function setHomePosition(isexit,arraySize){
+    setIndexes('home',isexit,arraySize)
+}
+function setWolfPosition(isexit,arraySize){
+    setIndexes('wolf',isexit,arraySize)
+}
+function setFencePosition(isexit,arraySize){
+    setIndexes('fence',isexit,arraySize)
+}
+
+function setIndexes(characterNum,isexit,arraySize){
+    const i = randomIndexes(arraySize)
+    const j = randomIndexes(arraySize)
+    if(!isexit.includes(`${i}${j}`)){
+        isexit.push(`${i}${j}`)
+        const element = character.find( item => item.name === characterNum)
+        array[i][j] = element.num
+    }  
+}
+
+function  randomIndexes(arraySize){
+    const i = Math.floor(Math.random() * arraySize)
     return i
 }
 
