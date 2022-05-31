@@ -4,8 +4,8 @@ const rabbitCell = 1
 const homeCell = 2
 const wolfCell = 3
 const fenceCell = 4
-const wolfProcent = 0.6
-const fenceProcent = 0.4
+const wolfProcent = 0.6 //60% count
+const fenceProcent = 0.4 //40% count
  let character=[
     {
         name:"rabbit",
