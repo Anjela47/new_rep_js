@@ -4,8 +4,8 @@ const rabbitCell = 1
 const homeCell = 2
 const wolfCell = 3
 const fenceCell = 4
-const wolfProcent = 0.6 //60% count
-const fenceProcent = 0.4 //40% count
+const wolfProcent = 0.6
+const fenceProcent = 0.4
  let character=[
     {
         name:"rabbit",
@@ -72,8 +72,8 @@ function setFencePosition(array){
 }
 
 function setIndexes(characterNum,array){
-    const j = randomIndexes(array)
-    const i = randomIndexes(array)
+    const j = Math.floor(Math.random() * array.length)
+    const i = Math.floor(Math.random() * array.length)
    
     if(array[i][j]===emptyCell){
         console.log(i,j)
@@ -84,9 +84,5 @@ function setIndexes(characterNum,array){
     }
 }
 
-function  randomIndexes(array){
-    const i = Math.floor(Math.random() * array.length)
-    return i
-}
 
 
