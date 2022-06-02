@@ -224,10 +224,6 @@ function goToDown(array,i,j){
     
 }
 
-function iswin(array,i,j){
-    const char = character.find(item => item.name === "home")
-    return (array[i][j]===char.num)
-}
 
 function getCurrentDir(array,character){
     const getFromArray = function(acc, row, i){
@@ -240,6 +236,3 @@ function getCurrentDir(array,character){
     }
     return  array.reduce(getFromArray, [])
 }
-
-
-
