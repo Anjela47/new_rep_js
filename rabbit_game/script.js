@@ -1,4 +1,3 @@
-let arr = []
 const EMPTY_CELL = 0
 const RABBIT_CELL = 1
 const HOME_CELL = 2
