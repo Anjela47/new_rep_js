@@ -1,3 +1,4 @@
+
 const EMPTY_CELL = 0
 const RABBIT_CELL = 1
 const HOME_CELL = 2
@@ -136,7 +137,7 @@ function getRequiredWolfAreaIndexes(array,index){
     if(checkValid(left,array)){
         wolfAreaIndexes.push(left)
     } 
-    return  wolfAreaIndexes.filter(item=> array[item[0]][item[1]]===EMPTY_CELL)
+    return  wolfAreaIndexes.filter(item=> array[item[0]][item[1]]===EMPTY_CELL || array[item[0]][item[1]]===RABBIT_CELL)
     
 }
 function findDistances(element,listOfRabbitIndex){
@@ -252,7 +253,7 @@ function generateImg(coord){
         img.src = "images/fence.png"
     }
     if(coord===HOME_CELL){
-        img.src = "images/home.jfif"
+        img.src = "images/home.png"
     }
     if(coord===WOLF_CELL){
         img.src = "images/wolf.png"
