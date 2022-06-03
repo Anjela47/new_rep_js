@@ -113,7 +113,9 @@ function wolfStep(array){
    
 }
 function wolfMove(requiredIndex,index){
-   
+   if(array[requiredIndex[0]][requiredIndex[1]]===RABBIT_CELL){
+        alert("Game over")
+   }
     array[requiredIndex[0]][requiredIndex[1]] = WOLF_CELL
     array[index[0]][index[1]] = EMPTY_CELL
 }
@@ -199,9 +201,6 @@ function moveRabbit(array,old,newcoord){
 function winOrLose(location){
     if(location===HOME_CELL){
         alert("You win")
-    }else
-    if(location==WOLF_CELL){
-        alert("GAME OVER")
     }
 }
 
