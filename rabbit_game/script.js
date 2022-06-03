@@ -34,17 +34,18 @@ document.getElementById("startBtn").onclick = startGame
 
 function startGame(){
     array = createArray()
+    console.log(array)
     setPositions(array)
     DrawBoard(array)
     rabbitEventMove(array)
+    
 }
 
 function createArray(){
-  const arraySize = parseInt(document.getElementById('selectNum').value)
-  const array = new Array(arraySize).fill(EMPTY_CELL).map(() => new Array(arraySize).fill(EMPTY_CELL))
-  
-  
-  return array
+    const arraySize = parseInt(document.getElementById('selectNum').value)
+    const array = new Array(arraySize).fill(EMPTY_CELL).map(() => new Array(arraySize).fill(EMPTY_CELL))
+    
+    return array
 }
 
 function setPositions(array){
@@ -73,20 +74,20 @@ function setFencePosition(array){
     setIndexes('fence',array)
 }
 
-function setIndexes(characterNum,array){
-    const j = Math.floor(Math.random() * array.length)
-    const i = Math.floor(Math.random() * array.length)
+function setIndexes(characterName,array){
+    const x = Math.floor(Math.random() * array.length)
+    const y = Math.floor(Math.random() * array.length)
    
-    if(array[i][j]===EMPTY_CELL){
-        const element = character.find(item => item.name === characterNum)
-        array[i][j] = element.num
+    if(array[x][y]===EMPTY_CELL){
+        const element = character.find(item => item.name === characterName)
+        array[x][y] = element.num
     }else{
-        setIndexes(characterNum,array)
+        setIndexes(characterName,array)
     }
 }
 
 function rabbitEventMove(array){
-    document.addEventListener("keydown", function(event){
+    window.addEventListener("keydown", function(event){
         rabbitStep(array,event.key)
         wolfStep(array)
         DrawBoard(array)
@@ -96,36 +97,36 @@ function rabbitEventMove(array){
 function wolfStep(array){
     const listOfWolfIndexes = getCurrentDir(array,WOLF_CELL)
     const listOfRabbitIndex = getCurrentDir(array,RABBIT_CELL)[0]
-    let requiredIndex
     listOfWolfIndexes.forEach(index => {
         const requiredWolfAreaIndexes = getRequiredWolfAreaIndexes(array, index)
-        let min=50
-        requiredWolfAreaIndexes.forEach(element => {
-            d = findDistances(element,listOfRabbitIndex)
-            if(d<min){
-                min = d
-                requiredIndex = element
-            }
+        const requiredIndex =[]
+        const distances = []
+        requiredWolfAreaIndexes.forEach(coord=>{
+            distances.push(findDistance(coord,listOfRabbitIndex))
+            requiredIndex.push(coord)
         })
-        wolfMove(requiredIndex,index)
+        i = distances.indexOf(Math.min(...distances))
+        wolfMove(requiredIndex[i],index)
        
     })    
    
 }
-function wolfMove(requiredIndex,index){
-   if(array[requiredIndex[0]][requiredIndex[1]]===RABBIT_CELL){
+
+function wolfMove([new_x,new_y],[old_x,old_y]){
+   if(array[new_x][new_y]===RABBIT_CELL){
         alert("Game over")
    }
-    array[requiredIndex[0]][requiredIndex[1]] = WOLF_CELL
-    array[index[0]][index[1]] = EMPTY_CELL
+    array[new_x][new_y] = WOLF_CELL
+    array[old_x][old_y] = EMPTY_CELL
 }
 
 function getRequiredWolfAreaIndexes(array,index){
-    const [wolf_i,wolf_j] = index
-    const up = [wolf_i-1,wolf_j] 
-    const right = [wolf_i,wolf_j+1] 
-    const down = [wolf_i+1,wolf_j] 
-    const left = [wolf_i,wolf_j-1]
+    const [x,y] = [0,1]
+    const [wolf_x,wolf_y] = index
+    const up = [wolf_x-1,wolf_y] 
+    const right = [wolf_x,wolf_y+1] 
+    const down = [wolf_x+1,wolf_y] 
+    const left = [wolf_x,wolf_y-1]
     const wolfAreaIndexes = []
     if(checkValid(up,array)){
         wolfAreaIndexes.push(up)
@@ -139,66 +140,69 @@ function getRequiredWolfAreaIndexes(array,index){
     if(checkValid(left,array)){
         wolfAreaIndexes.push(left)
     } 
-    return  wolfAreaIndexes.filter(item=> array[item[0]][item[1]]===EMPTY_CELL || array[item[0]][item[1]]===RABBIT_CELL)
+    return  wolfAreaIndexes.filter(item=> array[item[x]][item[y]]===EMPTY_CELL || array[item[x]][item[y]]===RABBIT_CELL)
     
 }
-function findDistances(element,listOfRabbitIndex){
-    d = Math.sqrt(Math.pow((listOfRabbitIndex[0]-element[0]),2) + Math.pow((listOfRabbitIndex[1]-element[1]),2))
+function findDistance([x1,y1],[x2,y2]){
+    d = Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2),2))
     return d
 }
-function checkValid(index,array){
-     if(index[0] != array.length && index[0] >= 0  && index[1] != array.length  && index[1] >=0 ){
-         return true
-     }
+function checkValid([x,y],array){
+    if(x != array.length && 
+       x >= 0  && 
+       y != array.length  && 
+       y >=0 ){
+       return true
+    }
 }
 function rabbitStep(array,step){
     const listOfIndexes = getCurrentDir(array,RABBIT_CELL)[0]
-    const [i,j] = listOfIndexes
+    const [x,y] = listOfIndexes
     if(step === "ArrowLeft"){
-        const newcoord = [i,j-1]
-        moveRabbit(array,listOfIndexes,newcoord)
-    }else
-    if(step === "ArrowUp"){
-        moveRabbit(array,listOfIndexes,[i-1,j])
-    }else
-    if(step === "ArrowRight"){
-        moveRabbit(array,listOfIndexes,[i,j+1])
-    }else
-    if(step === "ArrowDown"){
-        moveRabbit(array,listOfIndexes,[i+1,j])
+        moveRabbit(array,[x,y],[x,y-1])
     }
-    // DrawBoard(array)
+    if(step === "ArrowUp"){
+        moveRabbit(array,[x,y],[x-1,y])
+    }
+    if(step === "ArrowRight"){
+        moveRabbit(array,[x,y],[x,y+1])
+    }
+    if(step === "ArrowDown"){
+        moveRabbit(array,[x,y],[x+1,y])
+    }
     console.log(array)
     
 }
 
-function moveRabbit(array,old,newcoord){
-    if(newcoord[0]===-1 && array[array.length-1][old[1]]!=FENCE_CELL){
-        winOrLose(array[array.length-1][old[1]])
-        array[array.length-1][old[1]] = RABBIT_CELL
-        
+function moveRabbit(array,[old_x,old_y],[new_x,new_y]){
+    if(new_x===-1 && array[array.length-1][old_y]!=FENCE_CELL){
+        iswin(array[array.length-1][old_y])
+        array[array.length-1][old_y] = RABBIT_CELL
+        array[old_x][old_y] = EMPTY_CELL
     }else
-    if(newcoord[1]===-1 && array[old[0]][array.length-1]!=FENCE_CELL){
-        winOrLose(array[old[0]][array.length-1])
-        array[old[0]][array.length-1] = RABBIT_CELL
+    if(new_y===-1 && array[old_x][array.length-1]!=FENCE_CELL){
+        iswin(array[old_x][array.length-1])
+        array[old_x][array.length-1] = RABBIT_CELL
+        array[old_x][old_y] = EMPTY_CELL
     }else
-    if(newcoord[0]===array.length && array[0][old[1]]!=FENCE_CELL){
-        winOrLose(array[0][old[1]])
-        array[0][old[1]] = RABBIT_CELL
+    if(new_x===array.length && array[0][old_y]!=FENCE_CELL){
+        iswin(array[0][old_y])
+        array[0][old_y] = RABBIT_CELL
+        array[old_x][old_y] = EMPTY_CELL
     }else
-    if(newcoord[1]===array.length && array[old[0]][0]!=FENCE_CELL){
-        winOrLose( array[old[0]][0])
-        array[old[0]][0] = RABBIT_CELL
+    if(new_y===array.length && array[old_x][0]!=FENCE_CELL){
+        iswin( array[old_x][0])
+        array[old_x][0] = RABBIT_CELL
+        array[old_x][old_y] = EMPTY_CELL
     }else
-    if(array[newcoord[0]][newcoord[1]] != FENCE_CELL){
-        winOrLose(array[newcoord[0]][newcoord[1]])
-        array[newcoord[0]][newcoord[1]] = RABBIT_CELL
+    if(array[new_x][new_y] != FENCE_CELL){
+        iswin(array[new_x][new_y])
+        array[new_x][new_y] = RABBIT_CELL
+        array[old_x][old_y] = EMPTY_CELL
     }
-    array[old[0]][old[1]] = EMPTY_CELL
-    
-
 }
-function winOrLose(location){
+
+function iswin(location){
     if(location===HOME_CELL){
         alert("You win")
     }
