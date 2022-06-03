@@ -1,0 +1,13 @@
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: purple;
+    margin: 1px;
+    float: left;
+  }
+  img{
+    width: 60px;
+    height: 60px;
+    background-image: none;
+    background-color: purple;
+  }
