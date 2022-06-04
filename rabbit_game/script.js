@@ -1,4 +1,3 @@
-
 const EMPTY_CELL = 0
 const RABBIT_CELL = 1
 const HOME_CELL = 2
@@ -30,17 +29,26 @@ let character=[
     }
 ]
 
-document.getElementById("startBtn").onclick = startGame
-
 function startGame(){
-    array = createArray()
+    const array = createArray()
     console.log(array)
     setPositions(array)
     DrawBoard(array)
     rabbitEventMove(array)
+   
+ 
     
 }
-
+function rabbitEventMove(array){
+    window.onkeydown = (event => {
+        rabbitStep(array,event.key)
+        wolfStep(array)
+        console.log(array)
+        DrawBoard(array)
+    })
+    
+    
+}
 function createArray(){
     const arraySize = parseInt(document.getElementById('selectNum').value)
     const array = new Array(arraySize).fill(EMPTY_CELL).map(() => new Array(arraySize).fill(EMPTY_CELL))
@@ -86,13 +94,6 @@ function setIndexes(characterName,array){
     }
 }
 
-function rabbitEventMove(array){
-    window.addEventListener("keydown", function(event){
-        rabbitStep(array,event.key)
-        wolfStep(array)
-        DrawBoard(array)
-    })
-}
 
 function wolfStep(array){
     const listOfWolfIndexes = getCurrentDir(array,WOLF_CELL)
@@ -106,27 +107,29 @@ function wolfStep(array){
             requiredIndex.push(coord)
         })
         i = distances.indexOf(Math.min(...distances))
-        wolfMove(requiredIndex[i],index)
+        wolfMove(array,requiredIndex[i],index)
        
-    })    
+    })   
    
 }
 
-function wolfMove([new_x,new_y],[old_x,old_y]){
-   if(array[new_x][new_y]===RABBIT_CELL){
-        alert("Game over")
-   }
-    array[new_x][new_y] = WOLF_CELL
-    array[old_x][old_y] = EMPTY_CELL
+function wolfMove(array,[newX,newY],[oldX,oldY]){
+    if(array[newX][newY]===RABBIT_CELL){
+         alert("Game over")
+    }else{
+        array[newX][newY] = WOLF_CELL
+        array[oldX][oldY] = EMPTY_CELL
+    }
+    
 }
 
 function getRequiredWolfAreaIndexes(array,index){
     const [x,y] = [0,1]
-    const [wolf_x,wolf_y] = index
-    const up = [wolf_x-1,wolf_y] 
-    const right = [wolf_x,wolf_y+1] 
-    const down = [wolf_x+1,wolf_y] 
-    const left = [wolf_x,wolf_y-1]
+    const [wolfX,wolfY] = index
+    const up = [wolfX-1,wolfY] 
+    const right = [wolfX,wolfY+1] 
+    const down = [wolfX+1,wolfY] 
+    const left = [wolfX,wolfY-1]
     const wolfAreaIndexes = []
     if(checkValid(up,array)){
         wolfAreaIndexes.push(up)
@@ -140,7 +143,7 @@ function getRequiredWolfAreaIndexes(array,index){
     if(checkValid(left,array)){
         wolfAreaIndexes.push(left)
     } 
-    return  wolfAreaIndexes.filter(item=> array[item[x]][item[y]]===EMPTY_CELL || array[item[x]][item[y]]===RABBIT_CELL)
+    return  wolfAreaIndexes.filter(item=> array[item[x]][item[y]]===EMPTY_CELL ||array[item[x]][item[y]]===RABBIT_CELL )
     
 }
 function findDistance([x1,y1],[x2,y2]){
@@ -159,55 +162,76 @@ function rabbitStep(array,step){
     const listOfIndexes = getCurrentDir(array,RABBIT_CELL)[0]
     const [x,y] = listOfIndexes
     if(step === "ArrowLeft"){
-        moveRabbit(array,[x,y],[x,y-1])
-    }
+        moveRabbitToLeft(array,[x,y])
+    }else
     if(step === "ArrowUp"){
-        moveRabbit(array,[x,y],[x-1,y])
-    }
+       moveRabbitToUp(array,[x,y])
+    }else
     if(step === "ArrowRight"){
-        moveRabbit(array,[x,y],[x,y+1])
-    }
+        moveRabbitToRight(array,[x,y])
+    }else
     if(step === "ArrowDown"){
-        moveRabbit(array,[x,y],[x+1,y])
+        moveRabbitToDown(array,[x,y])
     }
-    console.log(array)
-    
+    //console.log(array)
 }
+function moveRabbitToLeft(array,[oldX,oldY]){
+    if((oldY===0 && array[oldX][array.length-1]!=FENCE_CELL)){
+        iswin(array[oldX][array.length-1])
+        array[oldX][oldY] = EMPTY_CELL
+        array[oldX][array.length-1] = RABBIT_CELL
+    }else{
+        moveRabbit(array,[oldX,oldY],[oldX,oldY-1])
+    }
+}
+function moveRabbitToUp(array,[oldX,oldY]){
+    if((oldX===0 && array[array.length-1][oldY]!=FENCE_CELL)){
+        iswin(array[array.length-1][oldY])
+        array[oldX][oldY] = EMPTY_CELL
+        array[array.length-1][oldY] = RABBIT_CELL
+    }else{
+        moveRabbit(array,[oldX,oldY],[oldX-1,oldY])
+    }
+}
+function moveRabbitToRight(array,[oldX,oldY]){
+    if((oldY===array.length-1 && array[oldX][0]!=FENCE_CELL)){
+        iswin(array[oldX][0])
+        array[oldX][oldY] = EMPTY_CELL
+        array[oldX][0] = RABBIT_CELL
+    }else{
+        moveRabbit(array,[oldX,oldY],[oldX,oldY+1])
+    }
+}
+function moveRabbitToDown(array,[oldX,oldY]){
+    if((oldX===array.length-1 && array[0][oldY]!=FENCE_CELL)){
+        iswin(array[0][oldY])
+        array[oldX][oldY] = EMPTY_CELL
+        array[0][oldY] = RABBIT_CELL
+    }else{
+        moveRabbit(array,[oldX,oldY],[oldX+1,oldY])
+    }
+}
+function moveRabbit(array,[oldX,oldY],[newX,newY]){
 
-function moveRabbit(array,[old_x,old_y],[new_x,new_y]){
-    if(new_x===-1 && array[array.length-1][old_y]!=FENCE_CELL){
-        iswin(array[array.length-1][old_y])
-        array[array.length-1][old_y] = RABBIT_CELL
-        array[old_x][old_y] = EMPTY_CELL
-    }else
-    if(new_y===-1 && array[old_x][array.length-1]!=FENCE_CELL){
-        iswin(array[old_x][array.length-1])
-        array[old_x][array.length-1] = RABBIT_CELL
-        array[old_x][old_y] = EMPTY_CELL
-    }else
-    if(new_x===array.length && array[0][old_y]!=FENCE_CELL){
-        iswin(array[0][old_y])
-        array[0][old_y] = RABBIT_CELL
-        array[old_x][old_y] = EMPTY_CELL
-    }else
-    if(new_y===array.length && array[old_x][0]!=FENCE_CELL){
-        iswin( array[old_x][0])
-        array[old_x][0] = RABBIT_CELL
-        array[old_x][old_y] = EMPTY_CELL
-    }else
-    if(array[new_x][new_y] != FENCE_CELL){
-        iswin(array[new_x][new_y])
-        array[new_x][new_y] = RABBIT_CELL
-        array[old_x][old_y] = EMPTY_CELL
+    if(array[newX][newY] != FENCE_CELL){
+        iswin(array[newX][newY])
+        array[oldX][oldY] = EMPTY_CELL
+        array[newX][newY] = RABBIT_CELL
+        
     }
-}
+ }
 
 function iswin(location){
     if(location===HOME_CELL){
-        alert("You win")
+        alert('Yo win')
+    }else if(location===WOLF_CELL){
+        alert('Game over')
     }
 }
-
+function message(status){
+    document.getElementById('messageBox').style.display='block'
+    document.getElementById('message').innerHTML = status
+}
 function getCurrentDir(array,character){
     const getFromArray = function(acc, row, i){
         row.forEach((item, j) => {
