@@ -3,6 +3,7 @@ const RABBIT_CELL = 1
 const HOME_CELL = 2
 const WOLF_CELL = 3
 const FENCE_CELL = 4
+
 const WOLF_PROCENT = 0.6
 const FENCE_PROCENT = 0.4
 
