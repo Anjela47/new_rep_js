@@ -3,7 +3,6 @@ const RABBIT_CELL = 1
 const HOME_CELL = 2
 const WOLF_CELL = 3
 const FENCE_CELL = 4
-
 const WOLF_PROCENT = 0.6
 const FENCE_PROCENT = 0.4
 
@@ -29,7 +28,10 @@ let character=[
         num:FENCE_CELL
     }
 ]
-
+document.getElementById('startAgain').onclick = function () {
+    document.getElementById('messageBox').style.display = 'none'
+    startGame()
+}
 function startGame(){
     const array = createArray()
     console.log(array)
@@ -116,7 +118,7 @@ function wolfStep(array){
 
 function wolfMove(array,[newX,newY],[oldX,oldY]){
     if(array[newX][newY]===RABBIT_CELL){
-         alert("Game over")
+        message("Looser(.. Game over")
     }else{
         array[newX][newY] = WOLF_CELL
         array[oldX][oldY] = EMPTY_CELL
@@ -177,29 +179,32 @@ function rabbitStep(array,step){
     //console.log(array)
 }
 function moveRabbitToLeft(array,[oldX,oldY]){
+    
     if((oldY===0 && array[oldX][array.length-1]!=FENCE_CELL)){
         iswin(array[oldX][array.length-1])
         array[oldX][oldY] = EMPTY_CELL
         array[oldX][array.length-1] = RABBIT_CELL
-    }else{
+    }else if(array[oldX][array.length-1]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX,oldY-1])
     }
 }
 function moveRabbitToUp(array,[oldX,oldY]){
+    
     if((oldX===0 && array[array.length-1][oldY]!=FENCE_CELL)){
         iswin(array[array.length-1][oldY])
         array[oldX][oldY] = EMPTY_CELL
         array[array.length-1][oldY] = RABBIT_CELL
-    }else{
+    }else if(array[array.length-1][oldY]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX-1,oldY])
     }
 }
 function moveRabbitToRight(array,[oldX,oldY]){
+    
     if((oldY===array.length-1 && array[oldX][0]!=FENCE_CELL)){
         iswin(array[oldX][0])
         array[oldX][oldY] = EMPTY_CELL
         array[oldX][0] = RABBIT_CELL
-    }else{
+    }else if(array[oldX][0]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX,oldY+1])
     }
 }
@@ -208,25 +213,24 @@ function moveRabbitToDown(array,[oldX,oldY]){
         iswin(array[0][oldY])
         array[oldX][oldY] = EMPTY_CELL
         array[0][oldY] = RABBIT_CELL
-    }else{
+    }else if(array[0][oldY]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX+1,oldY])
     }
 }
 function moveRabbit(array,[oldX,oldY],[newX,newY]){
-
-    if(array[newX][newY] != FENCE_CELL){
+    if(array[newX][newY]!=FENCE_CELL){
         iswin(array[newX][newY])
         array[oldX][oldY] = EMPTY_CELL
         array[newX][newY] = RABBIT_CELL
-        
-    }
+    }    
+    
  }
 
 function iswin(location){
     if(location===HOME_CELL){
-        alert('Yo win')
+        message('That\'s Great! You win')
     }else if(location===WOLF_CELL){
-        alert('Game over')
+        message('Looser(.. Game over')
     }
 }
 function message(status){
