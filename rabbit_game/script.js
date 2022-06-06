@@ -182,8 +182,9 @@ function moveRabbitToLeft(array,[oldX,oldY]){
     
     if((oldY===0 && array[oldX][array.length-1]!=FENCE_CELL)){
         iswin(array[oldX][array.length-1])
-        array[oldX][oldY] = EMPTY_CELL
         array[oldX][array.length-1] = RABBIT_CELL
+        array[oldX][oldY] = EMPTY_CELL
+        
     }else if(array[oldX][array.length-1]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX,oldY-1])
     }
@@ -192,8 +193,9 @@ function moveRabbitToUp(array,[oldX,oldY]){
     
     if((oldX===0 && array[array.length-1][oldY]!=FENCE_CELL)){
         iswin(array[array.length-1][oldY])
-        array[oldX][oldY] = EMPTY_CELL
         array[array.length-1][oldY] = RABBIT_CELL
+        array[oldX][oldY] = EMPTY_CELL
+        
     }else if(array[array.length-1][oldY]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX-1,oldY])
     }
@@ -202,8 +204,9 @@ function moveRabbitToRight(array,[oldX,oldY]){
     
     if((oldY===array.length-1 && array[oldX][0]!=FENCE_CELL)){
         iswin(array[oldX][0])
-        array[oldX][oldY] = EMPTY_CELL
         array[oldX][0] = RABBIT_CELL
+        array[oldX][oldY] = EMPTY_CELL
+        
     }else if(array[oldX][0]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX,oldY+1])
     }
@@ -211,8 +214,9 @@ function moveRabbitToRight(array,[oldX,oldY]){
 function moveRabbitToDown(array,[oldX,oldY]){
     if((oldX===array.length-1 && array[0][oldY]!=FENCE_CELL)){
         iswin(array[0][oldY])
-        array[oldX][oldY] = EMPTY_CELL
         array[0][oldY] = RABBIT_CELL
+        array[oldX][oldY] = EMPTY_CELL
+        
     }else if(array[0][oldY]!=FENCE_CELL){
         moveRabbit(array,[oldX,oldY],[oldX+1,oldY])
     }
@@ -220,8 +224,9 @@ function moveRabbitToDown(array,[oldX,oldY]){
 function moveRabbit(array,[oldX,oldY],[newX,newY]){
     if(array[newX][newY]!=FENCE_CELL){
         iswin(array[newX][newY])
-        array[oldX][oldY] = EMPTY_CELL
         array[newX][newY] = RABBIT_CELL
+        array[oldX][oldY] = EMPTY_CELL
+        
     }    
     
  }
